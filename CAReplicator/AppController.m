@@ -11,12 +11,62 @@
 @implementation AppController
 
 -(void)awakeFromNib {
-    self.textField.title = @"animation";
+    self.textField.title = @"";
     rootLayer = [CALayer layer];
     
-    CGColorRef color = CGColorCreateGenericRGB(0.0, 0.0, 0.0, 1.0);
+    CGColorRef color = CGColorCreateGenericRGB(.5, .5, .5, 1.0);
     rootLayer.backgroundColor = color;
     CGColorRelease(color);
+    
+    CABasicAnimation *translationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.translation.x"];
+    translationAnimation.duration = 1.4;
+    translationAnimation.autoreverses = YES;
+    translationAnimation.repeatCount = HUGE_VAL;
+    translationAnimation.toValue = [NSNumber numberWithFloat:20];
+  
+    CABasicAnimation *rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
+    rotationAnimation.duration = 10.0;
+    rotationAnimation.repeatCount = HUGE_VAL;
+    rotationAnimation.toValue = [NSNumber numberWithFloat:M_PI * 2];
+    
+    CALayer *square = [CALayer layer];
+    square.frame = (CGRect) {CGPointZero, {50,50}};
+//    square.position = CGPointMake(view.bounds.size.width/2, view.bounds.size.height/2);
+    square.position = CGPointMake(30, 30);
+    CGColorRef layerColor = CGColorCreateGenericRGB(.7, 1, .3, 1);
+    square.backgroundColor = layerColor;
+    CGColorRelease(layerColor);
+    square.cornerRadius = 5;
+    [square addAnimation:translationAnimation forKey:@"translate.z"];
+    [square addAnimation:rotationAnimation forKey:@"translate.rotate"];
+    
+
+    
+    
+    CAReplicatorLayer *xLayer = [CAReplicatorLayer layer];
+    xLayer.instanceCount = 10;
+    xLayer.instanceDelay = .1;
+    xLayer.instanceGreenOffset = -.1;
+    xLayer.instanceBlueOffset = .05;
+    xLayer.instanceTransform = CATransform3DMakeTranslation(100, 0, 0);
+    
+    CAReplicatorLayer *yLayer = [CAReplicatorLayer layer];
+    yLayer.instanceCount = 10;
+//    yLayer.instanceDelay = .1;
+//    yLayer.instanceGreenOffset = -.2;
+//    yLayer.instanceBlueOffset = .4;
+    yLayer.instanceTransform = CATransform3DMakeTranslation(0, 100, 0);
+
+    
+    [xLayer addSublayer:square];
+    [yLayer addSublayer:xLayer];
+    
+//    [rootLayer addSublayer:xLayer];
+    [rootLayer addSublayer:yLayer];
+    
+    
+    
+    /*
     
     //Replicator Layer
 	replicatorEast	= [CAReplicatorLayer layer];
@@ -80,12 +130,14 @@
 
     
     
-
+*/
     view.layer = rootLayer;
     view.wantsLayer = YES;
     view.needsDisplay = YES;
-    
+  /*
     [self performSelector:@selector(zoomIn) withObject:nil afterDelay:1.0];
+     
+     */
     
 }
 
